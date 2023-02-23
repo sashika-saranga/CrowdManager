@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["CrowdManager/CrowdManager.csproj", "CrowdManager/"]
-RUN dotnet restore "CrowdManager/CrowdManager.csproj"
+COPY ["Identity.API/Identity.API.csproj", "Identity.API/"]
+RUN dotnet restore "Identity.API/Identity.API.csproj"
 COPY . .
-WORKDIR "/src/CrowdManager"
-RUN dotnet build "CrowdManager.csproj" -c Release -o /app/build
+WORKDIR "/src/Identity.API"
+RUN dotnet build "Identity.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "CrowdManager.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Identity.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CrowdManager.dll"]
+ENTRYPOINT ["dotnet", "Identity.API.dll"]
